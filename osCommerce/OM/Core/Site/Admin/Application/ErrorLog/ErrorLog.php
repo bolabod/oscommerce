@@ -51,5 +51,9 @@
 
       return true;
     }
+
+    public static function new_errors($lastvisit){
+     return count(ErrorHandler::find('', null, null, $lastvisit));
+    }
   }
 ?>
