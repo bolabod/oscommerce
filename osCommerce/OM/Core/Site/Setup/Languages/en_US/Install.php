@@ -1,9 +1,7 @@
-# osCommerce Online Merchant $osCommerce-SIG$
-# Copyright (c) 2010 osCommerce (http://www.oscommerce.com)
+# osCommerce Online Merchant
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License v2 (1991)
-# as published by the Free Software Foundation.
+# @copyright Copyright (c) 2011 osCommerce; http://www.oscommerce.com
+# @license BSD License; http://www.oscommerce.com/bsdlicense.txt
 
 page_title_installation = New Installation
 
@@ -44,6 +42,9 @@ param_administrator_username = Administrator Username
 param_administrator_username_description = The administrator username to use for the administration tool.
 param_administrator_password = Administrator Password
 param_administrator_password_description = The password to use for the administrator account.
+
+param_time_zone = Time Zone
+param_time_zone_description = The time zone to use for dates.
 
 param_database_import_sample_data = Import Sample Data
 param_database_import_sample_data_description = Inserting sample data into the database is recommended for first time installations.

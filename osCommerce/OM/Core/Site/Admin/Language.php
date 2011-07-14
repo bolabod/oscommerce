@@ -1,18 +1,15 @@
 <?php
-/*
-  osCommerce Online Merchant $osCommerce-SIG$
-  Copyright (c) 2010 osCommerce (http://www.oscommerce.com)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License v2 (1991)
-  as published by the Free Software Foundation.
-*/
+/**
+ * osCommerce Online Merchant
+ * 
+ * @copyright Copyright (c) 2011 osCommerce; http://www.oscommerce.com
+ * @license BSD License; http://www.oscommerce.com/bsdlicense.txt
+ */
 
   namespace osCommerce\OM\Core\Site\Admin;
 
   use osCommerce\OM\Core\OSCOM;
   use osCommerce\OM\Core\XML;
-  use osCommerce\OM\Core\Registry;
 
   class Language extends \osCommerce\OM\Core\Language {
     public function __construct() {
@@ -68,7 +65,7 @@
 
             $ini_array[$key] = $value;
           } elseif ( isset($key) ) {
-            $ini_array[$key] .= trim($line);
+            $ini_array[$key] .= "\n" . trim($line);
           }
         }
       }
@@ -113,13 +110,9 @@
     }
 
     function getData($id, $key = null) {
-      $OSCOM_Database = Registry::get('Database');
+      $data = array('id' => $id);
 
-      $Qlanguage = $OSCOM_Database->query('select * from :table_languages where languages_id = :languages_id');
-      $Qlanguage->bindInt(':languages_id', $id);
-      $Qlanguage->execute();
-
-      $result = $Qlanguage->toArray();
+      $result = OSCOM::callDB('Admin\GetLanguage', $data, 'Site');
 
       if ( empty($key) ) {
         return $result;
@@ -129,53 +122,23 @@
     }
 
     function getID($code = null) {
-      $OSCOM_Database = Registry::get('Database');
-
       if ( empty($code) ) {
         return $this->_languages[$this->_code]['id'];
       }
 
-      $Qlanguage = $OSCOM_Database->query('select languages_id from :table_languages where code = :code');
-      $Qlanguage->bindValue(':code', $code);
-      $Qlanguage->execute();
+      $data = array('code' => $code);
 
-      $result = $Qlanguage->toArray();
+      $result = OSCOM::callDB('Admin\GetLanguageID', $data, 'Site');
 
       return $result['languages_id'];
     }
 
     function getCode($id = null) {
-      $OSCOM_Database = Registry::get('Database');
-
       if ( empty($id) ) {
         return $this->_code;
       }
 
-      $Qlanguage = $OSCOM_Database->query('select code from :table_languages where languages_id = :languages_id');
-      $Qlanguage->bindValue(':languages_id', $id);
-      $Qlanguage->execute();
-
-      $result = $Qlanguage->toArray();
-
-      return $result['code'];
-    }
-
-    function showImage($code = null, $width = '16', $height = '10', $parameters = null) {
-      if ( empty($code) ) {
-        $code = $this->_code;
-      }
-
-      $image_code = strtolower(substr($code, 3));
-
-      if ( !is_numeric($width) ) {
-        $width = 16;
-      }
-
-      if ( !is_numeric($height) ) {
-        $height = 10;
-      }
-
-      return osc_image('images/worldflags/' . $image_code . '.png', $this->_languages[$code]['name'], $width, $height, $parameters);
+      return $this->getData($id, 'code');
     }
 
     function isDefined($key) {

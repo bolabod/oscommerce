@@ -1,14 +1,13 @@
 <?php
-/*
-  osCommerce Online Merchant $osCommerce-SIG$
-  Copyright (c) 2010 osCommerce (http://www.oscommerce.com)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License v2 (1991)
-  as published by the Free Software Foundation.
-*/
+/**
+ * osCommerce Online Merchant
+ * 
+ * @copyright Copyright (c) 2011 osCommerce; http://www.oscommerce.com
+ * @license BSD License; http://www.oscommerce.com/bsdlicense.txt
+ */
 
   use osCommerce\OM\Core\OSCOM;
+  use osCommerce\OM\Core\HTML;
 
   $www_location = 'http://' . $_SERVER['HTTP_HOST'];
 
@@ -20,8 +19,8 @@
 
   $www_location = substr($www_location, 0, strpos($www_location, 'index.php'));
 
-  $db_table_types = array(array('id' => 'mysql', 'text' => 'MySQL - MyISAM (Default)'),
-                          array('id' => 'mysql_innodb', 'text' => 'MySQL - InnoDB (Transaction-Safe)'));
+  $db_table_types = array(array('id' => 'MySQL_Standard', 'text' => 'MySQL Standard'),
+                          array('id' => 'MySQL_V5', 'text' => 'MySQL v5'));
 ?>
 
 <script language="javascript" type="text/javascript">
@@ -34,37 +33,31 @@
   var dbPrefix;
 
   var formSubmited = false;
+  var formSuccess = false;
 
   function handleHttpResponse_DoImport(data) {
-    var result = /\[\[([^|]*?)(?:\|([^|]*?)){0,1}\]\]/.exec(data);
-    result.shift();
-
-    if (result[0] == '1') {
+    if (data.result == true) {
       $('#mBoxContents').html('<p><img src="<?php echo OSCOM::getPublicSiteLink('templates/default/images/success.gif'); ?>" align="right" hspace="5" vspace="5" border="0" /><?php echo OSCOM::getDef('rpc_database_imported'); ?></p>');
+
+      formSuccess = true;
 
       $('#installForm').submit();
     } else {
-      $('#mBoxContents').html('<p><img src="<?php echo OSCOM::getPublicSiteLink('templates/default/images/failed.gif'); ?>" align="right" hspace="5" vspace="5" border="0" /><?php echo OSCOM::getDef('rpc_database_import_error'); ?></p>'.replace('%s', result[1]));
+      $('#mBoxContents').html('<p><img src="<?php echo OSCOM::getPublicSiteLink('templates/default/images/failed.gif'); ?>" align="right" hspace="5" vspace="5" border="0" /><?php echo OSCOM::getDef('rpc_database_import_error'); ?></p>'.replace('%s', data.error_message));
 
       formSubmited = false;
     }
   }
 
   function handleHttpResponse(data) {
-    var result = /\[\[([^|]*?)(?:\|([^|]*?)){0,1}\]\]/.exec(data);
-    result.shift();
-
-    if (result[0] == '1') {
+    if (data.result == true) {
       $('#mBoxContents').html('<p><img src="<?php echo OSCOM::getPublicSiteLink('templates/default/images/progress.gif'); ?>" align="right" hspace="5" vspace="5" border="0" /><?php echo OSCOM::getDef('rpc_database_importing'); ?></p>');
 
-      $.ajax({
-        type: "POST",
-        url: "<?php echo OSCOM::getRPCLink(null, null, 'DBImport'); ?>",
-        data: "server=" + dbServer + "&username=" + dbUsername + "&password=" + dbPassword + "&name=" + dbName + "&port=" + dbPort + "&class=" + dbClass + "&import=0&prefix=" + dbPrefix,
-        success: handleHttpResponse_DoImport
-      });
+      $.post('<?php echo OSCOM::getRPCLink(null, null, 'DBImport'); ?>',
+             'server=' + dbServer + '&username=' + dbUsername + '&password=' + dbPassword + '&name=' + dbName + '&port=' + dbPort + '&class=' + dbClass + '&import=0&prefix=' + dbPrefix,
+             handleHttpResponse_DoImport, 'json');
     } else {
-      $('#mBoxContents').html('<p><img src="<?php echo OSCOM::getPublicSiteLink('templates/default/images/failed.gif'); ?>" align="right" hspace="5" vspace="5" border="0" /><?php echo OSCOM::getDef('rpc_database_connection_error'); ?></p>'.replace('%s', result[1]));
+      $('#mBoxContents').html('<p><img src="<?php echo OSCOM::getPublicSiteLink('templates/default/images/failed.gif'); ?>" align="right" hspace="5" vspace="5" border="0" /><?php echo OSCOM::getDef('rpc_database_connection_error'); ?></p>'.replace('%s', data.error_message));
 
       formSubmited = false;
     }
@@ -80,20 +73,17 @@
     $('#mBox').css('visibility', 'visible').show();
     $('#mBoxContents').html('<p><img src="<?php echo OSCOM::getPublicSiteLink('templates/default/images/progress.gif'); ?>" align="right" hspace="5" vspace="5" border="0" /><?php echo OSCOM::getDef('rpc_database_connection_test'); ?></p>');
 
-    dbServer = $('#DB_SERVER').val();
-    dbUsername = $('#DB_SERVER_USERNAME').val();
-    dbPassword = $('#DB_SERVER_PASSWORD').val();
-    dbName = $('#DB_DATABASE').val();
-    dbPort = $('#DB_SERVER_PORT').val();
-    dbClass = $('#DB_DATABASE_CLASS').val();
-    dbPrefix = $('#DB_TABLE_PREFIX').val();
+    dbServer = encodeURIComponent($('#DB_SERVER').val());
+    dbUsername = encodeURIComponent($('#DB_SERVER_USERNAME').val());
+    dbPassword = encodeURIComponent($('#DB_SERVER_PASSWORD').val());
+    dbName = encodeURIComponent($('#DB_DATABASE').val());
+    dbPort = encodeURIComponent($('#DB_SERVER_PORT').val());
+    dbClass = encodeURIComponent($('#DB_DATABASE_CLASS').val());
+    dbPrefix = encodeURIComponent($('#DB_TABLE_PREFIX').val());
 
-    $.ajax({
-      type: "POST",
-      url: "<?php echo OSCOM::getRPCLink(null, null, 'DBCheck'); ?>",
-      data: "server=" + dbServer + "&username=" + dbUsername + "&password=" + dbPassword + "&name=" + dbName + "&port=" + dbPort + "&class=" + dbClass,
-      success: handleHttpResponse
-    });
+    $.post('<?php echo OSCOM::getRPCLink(null, null, 'DBCheck'); ?>',
+           'server=' + dbServer + '&username=' + dbUsername + '&password=' + dbPassword + '&name=' + dbName + '&port=' + dbPort + '&class=' + dbClass,
+           handleHttpResponse, 'json');
   }
 </script>
 
@@ -125,13 +115,13 @@
   </div>
 
   <div class="contentPane">
-    <form name="install" id="installForm" action="<?php echo OSCOM::getLink(null, null, 'step=2'); ?>" method="post" onsubmit="prepareDB(); return false;">
+    <form name="install" id="installForm" action="<?php echo OSCOM::getLink(null, null, 'step=2'); ?>" method="post">
 
     <h2><?php echo OSCOM::getDef('page_heading_web_server'); ?></h2>
 
     <table border="0" width="99%" cellspacing="0" cellpadding="5" class="inputForm">
       <tr>
-        <td class="inputField"><?php echo OSCOM::getDef('param_web_address') . '<br />' . osc_draw_input_field('HTTP_WWW_ADDRESS', $www_location, 'class="text"'); ?></td>
+        <td class="inputField"><?php echo OSCOM::getDef('param_web_address') . '<br />' . HTML::inputField('HTTP_WWW_ADDRESS', $www_location, 'class="text"'); ?></td>
         <td class="inputDescription"><?php echo OSCOM::getDef('param_web_address_description'); ?></td>
       </tr>
     </table>
@@ -142,37 +132,47 @@
 
     <table border="0" width="99%" cellspacing="0" cellpadding="5" class="inputForm">
       <tr>
-        <td class="inputField"><?php echo OSCOM::getDef('param_database_server') . '<br />' . osc_draw_input_field('DB_SERVER', null, 'class="text"'); ?></td>
+        <td class="inputField"><?php echo OSCOM::getDef('param_database_server') . '<br />' . HTML::inputField('DB_SERVER', null, 'class="text"'); ?></td>
         <td class="inputDescription"><?php echo OSCOM::getDef('param_database_server_description'); ?></td>
       </tr>
       <tr>
-        <td class="inputField"><?php echo OSCOM::getDef('param_database_username') . '<br />' . osc_draw_input_field('DB_SERVER_USERNAME', null, 'class="text"'); ?></td>
+        <td class="inputField"><?php echo OSCOM::getDef('param_database_username') . '<br />' . HTML::inputField('DB_SERVER_USERNAME', null, 'class="text"'); ?></td>
         <td class="inputDescription"><?php echo OSCOM::getDef('param_database_username_description'); ?></td>
       </tr>
       <tr>
-        <td class="inputField"><?php echo OSCOM::getDef('param_database_password') . '<br />' . osc_draw_input_field('DB_SERVER_PASSWORD', null, 'class="text"'); ?></td>
+        <td class="inputField"><?php echo OSCOM::getDef('param_database_password') . '<br />' . HTML::inputField('DB_SERVER_PASSWORD', null, 'class="text"'); ?></td>
         <td class="inputDescription"><?php echo OSCOM::getDef('param_database_password_description'); ?></td>
       </tr>
       <tr>
-        <td class="inputField"><?php echo OSCOM::getDef('param_database_name') . '<br />' . osc_draw_input_field('DB_DATABASE', null, 'class="text"'); ?></td>
+        <td class="inputField"><?php echo OSCOM::getDef('param_database_name') . '<br />' . HTML::inputField('DB_DATABASE', null, 'class="text"'); ?></td>
         <td class="inputDescription"><?php echo OSCOM::getDef('param_database_name_description'); ?></td>
       </tr>
       <tr>
-        <td class="inputField"><?php echo OSCOM::getDef('param_database_port') . '<br />' . osc_draw_input_field('DB_SERVER_PORT', null, 'class="text"'); ?></td>
+        <td class="inputField"><?php echo OSCOM::getDef('param_database_port') . '<br />' . HTML::inputField('DB_SERVER_PORT', null, 'class="text"'); ?></td>
         <td class="inputDescription"><?php echo OSCOM::getDef('param_database_port_description'); ?></td>
       </tr>
       <tr>
-        <td class="inputField"><?php echo OSCOM::getDef('param_database_type') . '<br />' . osc_draw_pull_down_menu('DB_DATABASE_CLASS', $db_table_types); ?></td>
+        <td class="inputField"><?php echo OSCOM::getDef('param_database_type') . '<br />' . HTML::selectMenu('DB_DATABASE_CLASS', $db_table_types); ?></td>
         <td class="inputDescription"><?php echo OSCOM::getDef('param_database_type_description'); ?></td>
       </tr>
       <tr>
-        <td class="inputField"><?php echo OSCOM::getDef('param_database_prefix') . '<br />' . osc_draw_input_field('DB_TABLE_PREFIX', 'osc_', 'class="text"'); ?></td>
+        <td class="inputField"><?php echo OSCOM::getDef('param_database_prefix') . '<br />' . HTML::inputField('DB_TABLE_PREFIX', 'osc_', 'class="text"'); ?></td>
         <td class="inputDescription"><?php echo OSCOM::getDef('param_database_prefix_description'); ?></td>
       </tr>
     </table>
 
-    <p align="right"><?php echo osc_draw_button(array('priority' => 'primary', 'icon' => 'triangle-1-e', 'title' => OSCOM::getDef('button_continue'))) . ' ' . osc_draw_button(array('href' => OSCOM::getLink(null, OSCOM::getDefaultSiteApplication()), 'priority' => 'secondary', 'icon' => 'close', 'title' => OSCOM::getDef('button_cancel'))); ?></p>
+    <p align="right"><?php echo HTML::button(array('priority' => 'primary', 'icon' => 'triangle-1-e', 'title' => OSCOM::getDef('button_continue'))) . ' ' . HTML::button(array('href' => OSCOM::getLink(null, OSCOM::getDefaultSiteApplication()), 'priority' => 'secondary', 'icon' => 'close', 'title' => OSCOM::getDef('button_cancel'))); ?></p>
 
     </form>
   </div>
 </div>
+
+<script type="text/javascript">
+  $("#installForm").submit(function(e) {
+    if ( formSuccess == false ) {
+      e.preventDefault();
+
+      prepareDB();
+    }
+  });
+</script>

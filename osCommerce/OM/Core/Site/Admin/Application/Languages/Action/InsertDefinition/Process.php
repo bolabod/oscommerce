@@ -1,12 +1,10 @@
 <?php
-/*
-  osCommerce Online Merchant $osCommerce-SIG$
-  Copyright (c) 2010 osCommerce (http://www.oscommerce.com)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License v2 (1991)
-  as published by the Free Software Foundation.
-*/
+/**
+ * osCommerce Online Merchant
+ * 
+ * @copyright Copyright (c) 2011 osCommerce; http://www.oscommerce.com
+ * @license BSD License; http://www.oscommerce.com/bsdlicense.txt
+ */
 
   namespace osCommerce\OM\Core\Site\Admin\Application\Languages\Action\InsertDefinition;
 
@@ -17,16 +15,17 @@
 
   class Process {
     public static function execute(ApplicationAbstract $application) {
-      $data = array('key' => $_POST['key'],
-                    'value' => $_POST['value']);
+      $data = array('group' => $_POST['defgroup'],
+                    'key' => $_POST['key'],
+                    'values' => $_POST['value']);
 
-      if ( Languages::insertDefinition($_POST['defgroup'], $data) ) {
+      if ( Languages::insertDefinition($data) ) {
         Registry::get('MessageStack')->add(null, OSCOM::getDef('ms_success_action_performed'), 'success');
       } else {
         Registry::get('MessageStack')->add(null, OSCOM::getDef('ms_error_action_not_performed'), 'error');
       }
 
-      osc_redirect_admin(OSCOM::getLink(null, null, 'id=' . $_GET['id'] . (isset($_GET['group']) ? '&group=' . $_GET['group'] : '')));
+      OSCOM::redirect(OSCOM::getLink(null, null, 'id=' . $_GET['id'] . (isset($_GET['group']) ? '&group=' . $_GET['group'] : '')));
     }
   }
 ?>

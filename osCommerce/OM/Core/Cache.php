@@ -1,12 +1,10 @@
 <?php
-/*
-  osCommerce Online Merchant $osCommerce-SIG$
-  Copyright (c) 2010 osCommerce (http://www.oscommerce.com)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License v2 (1991)
-  as published by the Free Software Foundation.
-*/
+/**
+ * osCommerce Online Merchant
+ * 
+ * @copyright Copyright (c) 2011 osCommerce; http://www.oscommerce.com
+ * @license BSD License; http://www.oscommerce.com/bsdlicense.txt
+ */
 
   namespace osCommerce\OM\Core;
 
@@ -43,11 +41,15 @@
  */
 
     public function write($data, $key = null) {
-      if ( empty($key) ) {
-        $key = $this->_key;
+      if ( is_writable(OSCOM::BASE_DIRECTORY . 'Work/Cache/') ) {
+        if ( empty($key) ) {
+          $key = $this->_key;
+        }
+
+        return ( file_put_contents(OSCOM::BASE_DIRECTORY . 'Work/Cache/' . $key . '.cache', serialize($data), LOCK_EX) !== false );
       }
 
-      return ( file_put_contents(OSCOM::BASE_DIRECTORY . 'Work/Cache/' . $key . '.cache', serialize($data), LOCK_EX) !== false );
+      return false;
     }
 
 /**
@@ -120,17 +122,19 @@
  */
 
     public static function clear($key) {
-      $key_length = strlen($key);
+      if ( is_writable(OSCOM::BASE_DIRECTORY . 'Work/Cache/') ) {
+        $key_length = strlen($key);
 
-      $d = dir(OSCOM::BASE_DIRECTORY . 'Work/Cache/');
+        $d = dir(OSCOM::BASE_DIRECTORY . 'Work/Cache/');
 
-      while ( ($entry = $d->read()) !== false ) {
-        if ( (strlen($entry) >= $key_length) && (substr($entry, 0, $key_length) == $key) ) {
-          @unlink(OSCOM::BASE_DIRECTORY . 'Work/Cache/' . $entry);
+        while ( ($entry = $d->read()) !== false ) {
+          if ( (strlen($entry) >= $key_length) && (substr($entry, 0, $key_length) == $key) ) {
+            @unlink(OSCOM::BASE_DIRECTORY . 'Work/Cache/' . $entry);
+          }
         }
-      }
 
-      $d->close();
+        $d->close();
+      }
     }
   }
 ?>

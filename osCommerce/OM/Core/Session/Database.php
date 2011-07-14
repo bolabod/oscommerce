@@ -1,19 +1,19 @@
 <?php
-/*
-  osCommerce Online Merchant $osCommerce-SIG$
-  Copyright (c) 2010 osCommerce (http://www.oscommerce.com)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License v2 (1991)
-  as published by the Free Software Foundation.
-*/
+/**
+ * osCommerce Online Merchant
+ * 
+ * @copyright Copyright (c) 2011 osCommerce; http://www.oscommerce.com
+ * @license BSD License; http://www.oscommerce.com/bsdlicense.txt
+ */
 
   namespace osCommerce\OM\Core\Session;
 
-  use osCommerce\OM\Core\Registry;
+  use osCommerce\OM\Core\OSCOM;
 
 /**
  * The Session\Database class stores the session data in the database
+ * 
+ * @since v3.0.0
  */
 
   class Database extends \osCommerce\OM\Core\SessionAbstract {
@@ -22,7 +22,7 @@
  * Initialize database based session storage handler
  *
  * @param string $name The name of the session
- * @access public
+ * @since v3.0.0
  */
 
     public function __construct($name) {
@@ -37,9 +37,22 @@
     }
 
 /**
+ * Checks if a session exists
+ *
+ * @param string $id The ID of the session
+ * @since v3.0.2
+ */
+
+    public function exists($id) {
+      $data = array('id' => $id);
+
+      return OSCOM::callDB('Session\Database\Check', $data, 'Core');
+    }
+
+/**
  * Opens the database based session storage handler
  *
- * @access public
+ * @since v3.0.0
  */
 
     public function handlerOpen() {
@@ -49,7 +62,7 @@
 /**
  * Closes the database based session storage handler
  *
- * @access public
+ * @since v3.0.0
  */
 
     public function handlerClose() {
@@ -60,24 +73,20 @@
  * Read session data from the database based session storage handler
  *
  * @param string $id The ID of the session
- * @access public
+ * @since v3.0.0
  */
 
     public function handlerRead($id) {
-      $OSCOM_Database = Registry::get('Database');
-
-      $Qsession = $OSCOM_Database->query('select value from :table_sessions where id = :id');
+      $data = array('id' => $id);
 
       if ( $this->_life_time > 0 ) {
-        $Qsession->appendQuery('and expiry >= :expiry');
-        $Qsession->bindInt(':expiry', time());
+        $data['expiry'] = time();
       }
 
-      $Qsession->bindValue(':id', $id);
-      $Qsession->execute();
+      $result = OSCOM::callDB('Session\Database\Get', $data, 'Core');
 
-      if ( $Qsession->numberOfRows() === 1 ) {
-        return base64_decode($Qsession->value('value'));
+      if ( $result !== false ) {
+        return base64_decode($result['value']);
       }
 
       return false;
@@ -88,26 +97,22 @@
  *
  * @param string $id The ID of the session
  * @param string $value The session data to store
- * @access public
+ * @since v3.0.0
  */
 
     public function handlerWrite($id, $value) {
-      $OSCOM_Database = Registry::get('Database');
+      $data = array('id' => $id,
+                    'expiry' => time() + $this->_life_time,
+                    'value' => base64_encode($value));
 
-      $Qsession = $OSCOM_Database->query('replace into :table_sessions values (:id, :expiry, :value)');
-      $Qsession->bindValue(':id', $id);
-      $Qsession->bindInt(':expiry', time() + $this->_life_time);
-      $Qsession->bindValue(':value', base64_encode($value));
-      $Qsession->execute();
-
-      return ( $Qsession->affectedRows() === 1 );
+      return OSCOM::callDB('Session\Database\Save', $data, 'Core');
     }
 
 /**
  * Destroys the session data from the database based session storage handler
  *
  * @param string $id The ID of the session
- * @access public
+ * @since v3.0.0
  */
 
     public function handlerDestroy($id) {
@@ -118,40 +123,32 @@
  * Garbage collector for the database based session storage handler
  *
  * @param string $max_life_time The maxmimum time a session should exist
- * @access public
+ * @since v3.0.0
  */
 
     public function handlerClean($max_life_time) {
 // $max_life_time is already added to the time in the _custom_write method
 
-      $OSCOM_Database = Registry::get('Database');
+      $data = array('expiry' => time());
 
-      $Qsession = $OSCOM_Database->query('delete from :table_sessions where expiry < :expiry');
-      $Qsession->bindInt(':expiry', time());
-      $Qsession->execute();
-
-      return ( $Qsession->affectedRows() > 0 );
+      return OSCOM::callDB('Session\Database\DeleteExpired', $data, 'Core');
     }
 
 /**
  * Deletes the session data from the database based session storage handler
  *
  * @param string $id The ID of the session
- * @access public
+ * @since v3.0.0
  */
 
     public function delete($id = null) {
-      $OSCOM_Database = Registry::get('Database');
-
       if ( empty($id) ) {
         $id = $this->_id;
       }
 
-      $Qsession = $OSCOM_Database->query('delete from :table_sessions where id = :id');
-      $Qsession->bindValue(':id', $id);
-      $Qsession->execute();
+      $data = array('id' => $id);
 
-      return ( $Qsession->affectedRows() === 1 );
+      return OSCOM::callDB('Session\Database\Delete', $data, 'Core');
     }
   }
 ?>

@@ -1,11 +1,9 @@
-/*
-  osCommerce Online Merchant $osCommerce-SIG$
-  Copyright (c) 2009 osCommerce (http://www.oscommerce.com)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License v2 (1991)
-  as published by the Free Software Foundation.
-*/
+/**
+ * osCommerce Online Merchant
+ * 
+ * @copyright Copyright (c) 2011 osCommerce; http://www.oscommerce.com
+ * @license BSD License; http://www.oscommerce.com/bsdlicense.txt
+ */
 
 jQuery.fn.slideFadeToggle = function(speed, easing, callback) {
   return this.animate({opacity: 'toggle', height: 'toggle'}, speed, easing, callback);
@@ -174,24 +172,6 @@ function flagCheckboxes(element) {
   }
 }
 
-$(document).ready(function() {
-  $('.fieldTitleAsDefault').focus(function(srcc) {
-    if ( $(this).val() == $(this)[0].title ) {
-      $(this).removeClass('fieldDefaultText');
-      $(this).val('');
-    }
-  });
-
-  $('.fieldTitleAsDefault').blur(function() {
-    if ( $(this).val() == '') {
-      $(this).addClass('fieldDefaultText');
-      $(this).val($(this)[0].title);
-    }
-  });
-
-  $('.fieldTitleAsDefault').blur();        
-});
-
 function htmlSpecialChars(string) {
   return $('<span>').text(string).html();
 };
@@ -237,3 +217,7 @@ function displayTaxRateValue(value, padding) {
 
   return value + '%';
 }
+
+$(function() {
+  $('input, textarea').placeholder();
+});

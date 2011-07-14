@@ -1,12 +1,10 @@
 <?php
-/*
-  osCommerce Online Merchant $osCommerce-SIG$
-  Copyright (c) 2010 osCommerce (http://www.oscommerce.com)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License v2 (1991)
-  as published by the Free Software Foundation.
-*/
+/**
+ * osCommerce Online Merchant
+ * 
+ * @copyright Copyright (c) 2011 osCommerce; http://www.oscommerce.com
+ * @license BSD License; http://www.oscommerce.com/bsdlicense.txt
+ */
 
   namespace osCommerce\OM\Core;
 
@@ -61,20 +59,16 @@
  */
 
     public static function getUserLevels($id, $site = null) {
-      $OSCOM_Database = Registry::get('Database');
-
       if ( empty($site) ) {
         $site = OSCOM::getSite();
       }
 
+      $data = array('id' => $id);
+
       $applications = array();
 
-      $Qaccess = $OSCOM_Database->query('select module from :table_administrators_access where administrators_id = :administrators_id');
-      $Qaccess->bindInt(':administrators_id', $id);
-      $Qaccess->execute();
-
-      while ( $Qaccess->next() ) {
-        $applications[] = $Qaccess->value('module');
+      foreach ( OSCOM::callDB('GetAccessUserLevels', $data, 'Core') as $am ) {
+        $applications[] = $am['module'];
       }
 
       if ( in_array('*', $applications) ) {
@@ -92,12 +86,8 @@
 
       $shortcuts = array();
 
-      $Qshortcuts = $OSCOM_Database->query('select module from :table_administrator_shortcuts where administrators_id = :administrators_id');
-      $Qshortcuts->bindInt(':administrators_id', $id);
-      $Qshortcuts->execute();
-
-      while ( $Qshortcuts->next() ) {
-        $shortcuts[] = $Qshortcuts->value('module');
+      foreach ( OSCOM::callDB('GetAccessUserShortcuts', $data, 'Core') as $as ) {
+        $shortcuts[] = $as['module'];
       }
 
       $levels = array();

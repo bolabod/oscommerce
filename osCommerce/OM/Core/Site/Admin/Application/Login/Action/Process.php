@@ -1,47 +1,45 @@
 <?php
-/*
-  osCommerce Online Merchant $osCommerce-SIG$
-  Copyright (c) 2010 osCommerce (http://www.oscommerce.com)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License v2 (1991)
-  as published by the Free Software Foundation.
-*/
+/**
+ * osCommerce Online Merchant
+ * 
+ * @copyright Copyright (c) 2011 osCommerce; http://www.oscommerce.com
+ * @license BSD License; http://www.oscommerce.com/bsdlicense.txt
+ */
 
   namespace osCommerce\OM\Core\Site\Admin\Application\Login\Action;
 
-  use osCommerce\OM\Core\ApplicationAbstract;
-  use osCommerce\OM\Core\Registry;
   use osCommerce\OM\Core\Access;
+  use osCommerce\OM\Core\ApplicationAbstract;
   use osCommerce\OM\Core\OSCOM;
+  use osCommerce\OM\Core\Registry;
+  use osCommerce\OM\Core\Site\Admin\Application\Login\Login;
 
   class Process {
     public static function execute(ApplicationAbstract $application) {
-      if ( !empty($_POST['user_name']) && !empty($_POST['user_password']) ) {
-        $Qadmin = Registry::get('Database')->query('select id, user_name, user_password from :table_administrators where user_name = :user_name limit 1');
-        $Qadmin->bindValue(':user_name', $_POST['user_name']);
-        $Qadmin->execute();
+      $data = array('username' => $_POST['user_name'],
+                    'password' => $_POST['user_password']);
 
-        if ( $Qadmin->numberOfRows() === 1 ) {
-          if ( osc_validate_password($_POST['user_password'], $Qadmin->value('user_password')) ) {
-            $_SESSION[OSCOM::getSite()]['id'] = $Qadmin->valueInt('id');
-            $_SESSION[OSCOM::getSite()]['username'] = $Qadmin->value('user_name');
-            $_SESSION[OSCOM::getSite()]['access'] = Access::getUserLevels($Qadmin->valueInt('id'));
+      if ( Login::isValidCredentials($data) ) {
+        Registry::get('Session')->recreate();
 
-            $to_application = OSCOM::getDefaultSiteApplication();
+        $admin = Login::getAdmin($data['username']);
 
-            if ( isset($_SESSION[OSCOM::getSite()]['redirect_origin']) ) {
-              $to_application = $_SESSION[OSCOM::getSite()]['redirect_origin'];
+        $_SESSION[OSCOM::getSite()]['id'] = (int)$admin['id'];
+        $_SESSION[OSCOM::getSite()]['username'] = $admin['user_name'];
+        $_SESSION[OSCOM::getSite()]['access'] = Access::getUserLevels($admin['id']);
 
-              unset($_SESSION[OSCOM::getSite()]['redirect_origin']);
-            }
+        $to_application = OSCOM::getDefaultSiteApplication();
 
-            osc_redirect_admin(OSCOM::getLink(null, $to_application));
-          }
+        if ( isset($_SESSION[OSCOM::getSite()]['redirect_origin']) ) {
+          $to_application = $_SESSION[OSCOM::getSite()]['redirect_origin'];
+
+          unset($_SESSION[OSCOM::getSite()]['redirect_origin']);
         }
-      }
 
-      Registry::get('MessageStack')->add('header', OSCOM::getDef('ms_error_login_invalid'), 'error');
+        OSCOM::redirect(OSCOM::getLink(null, $to_application));
+      } else {
+        Registry::get('MessageStack')->add('header', OSCOM::getDef('ms_error_login_invalid'), 'error');
+      }
     }
   }
 ?>

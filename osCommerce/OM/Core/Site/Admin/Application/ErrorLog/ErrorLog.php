@@ -1,15 +1,14 @@
 <?php
-/*
-  osCommerce Online Merchant $osCommerce-SIG$
-  Copyright (c) 2010 osCommerce (http://www.oscommerce.com)
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License v2 (1991)
-  as published by the Free Software Foundation.
-*/
+/**
+ * osCommerce Online Merchant
+ * 
+ * @copyright Copyright (c) 2011 osCommerce; http://www.oscommerce.com
+ * @license BSD License; http://www.oscommerce.com/bsdlicense.txt
+ */
 
   namespace osCommerce\OM\Core\Site\Admin\Application\ErrorLog;
 
+<<<<<<< HEAD
   use osCommerce\OM\Core\ErrorHandler;
   use osCommerce\OM\Core\DateTime;
 
@@ -56,4 +55,7 @@
      return count(ErrorHandler::find('', null, null, $lastvisit));
     }
   }
+=======
+  class ErrorLog extends \osCommerce\OM\Core\ApplicationModelAbstract { }
+>>>>>>> upstream/master
 ?>
