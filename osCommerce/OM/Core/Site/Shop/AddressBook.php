@@ -46,12 +46,12 @@
       $OSCOM_PDO = Registry::get('PDO');
       $OSCOM_Customer = Registry::get('Customer');
 
-      $Qentry = $OSCOM_PDO->prepare('select entry_gender, entry_company, entry_firstname, entry_lastname, entry_street_address, entry_suburb, entry_postcode, entry_city, entry_state, entry_zone_id, entry_country_id, entry_telephone, entry_fax from :table_address_book where address_book_id = :address_book_id and customers_id = :customers_id');
+      $Qentry = $OSCOM_PDO->prepare('select entry_gender as gender, entry_company as company, entry_firstname as firstname, entry_lastname as lastname, entry_street_address as street_address, entry_suburb as suburb, entry_postcode as postcode, entry_city as city, entry_state as state, entry_zone_id as zone_id, entry_country_id as country_id, entry_telephone as telephone, entry_fax as fax from :table_address_book where address_book_id = :address_book_id and customers_id = :customers_id');
       $Qentry->bindInt(':address_book_id', $id);
       $Qentry->bindInt(':customers_id', $OSCOM_Customer->getID());
       $Qentry->execute();
 
-      return $Qentry;
+      return $Qentry->toArray();
     }
 
 /**
@@ -136,7 +136,13 @@
       $Qab->bindValue(':entry_city', $data['city']);
       $Qab->bindValue(':entry_state', (ACCOUNT_STATE > -1) ? ((isset($data['zone_id']) && ($data['zone_id'] > 0)) ? '' : $data['state']) : '');
       $Qab->bindInt(':entry_country_id', $data['country']);
-      $Qab->bindInt(':entry_zone_id', (ACCOUNT_STATE > -1) ? ((isset($data['zone_id']) && ($data['zone_id'] > 0)) ? $data['zone_id'] : 0) : '');
+
+      if ( isset($data['zone_id']) && is_numeric($data['zone_id']) ) {
+        $Qab->bindInt(':entry_zone_id', $data['zone_id']);
+      } else {
+        $Qab->bindNull(':entry_zone_id');
+      }
+
       $Qab->bindValue(':entry_telephone', (ACCOUNT_TELEPHONE > -1) ? $data['telephone'] : '');
       $Qab->bindValue(':entry_fax', (ACCOUNT_FAX > -1) ? $data['fax'] : '');
       $Qab->execute();

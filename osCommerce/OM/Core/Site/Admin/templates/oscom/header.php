@@ -70,49 +70,12 @@
       echo '  <li class="shortcuts">';
 
       foreach ( Access::getShortcuts() as $shortcut ) {
-<<<<<<< HEAD
-        echo '<a href="' . OSCOM::getLink(null, $shortcut['module']) . '" id="shortcut-'.$shortcut['module'].'">' . $OSCOM_Template->getIcon(16, $shortcut['icon'], $shortcut['title']) . '<div class="jewel">0</div></a>';
-=======
         echo '<a href="' . OSCOM::getLink(null, $shortcut['module']) . '" id="shortcut-' . $shortcut['module'] . '">' . $OSCOM_Template->getIcon(16, $shortcut['icon'], $shortcut['title']) . '<div class="notBubble"></div></a>';
 
         $total_shortcuts++;
->>>>>>> upstream/master
       }
 
       echo '  </li>';
-      if ( Access::hasShortcutCallback() ) {
-       echo '<script type="text/javascript">
-
-               function updateJewels(){
-		jQuery.ajax({
-		   type: "GET",
-		   url: "index.php?RPC&Admin&Index&ShortcutAjax",
-		   success: function(ret){
-		    ret = jQuery.parseJSON(ret);
-		    jQuery.each(ret, function(key, val) { 
-	             if(jQuery("#shortcut-" + key + " .jewel").html != val && val > 0){
-	              jQuery("#shortcut-" + key + " .jewel").html(val).show();
-	              jQuery("#shortcut-" + key).click(function(){
-		       jQuery.ajax({
-		        type: "GET",
-		        url: "index.php?RPC&Admin&Index&ShortcutAjaxVisit",
-		        data: "module=" + key,
-		        success: function(ret){}
-		       });
-	              });
-	             }
-		    });
-		   }
-		 });
-		}
-
-		jQuery(document).ready(function() {
-		 updateJewels();
-		 setInterval("updateJewels()", 10000);
-		});
-
-       </script>';
-      }
     }
 
     echo '  <li><a href="#">' . HTML::outputProtected($_SESSION[OSCOM::getSite()]['username']) . ' &#9662;</a>' .
@@ -185,7 +148,7 @@
     }
   });
 
-  if (window.external.msIsSiteMode()) {
+  if ( (typeof window.external.msAddSiteMode != 'undefined') && window.external.msIsSiteMode() ) {
 
 <?php
     if ( Access::hasShortcut() ) {

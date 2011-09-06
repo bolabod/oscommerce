@@ -82,6 +82,15 @@
             $applications[] = $file['name'];
           }
         }
+
+        $DLcapps = new DirectoryListing(OSCOM::BASE_DIRECTORY . 'Custom/Site/' . $site . '/Application');
+        $DLcapps->setIncludeFiles(false);
+
+        foreach ( $DLcapps->getFiles() as $file ) {
+          if ( !in_array($file['name'], $applications) && !in_array($file['name'], call_user_func(array('osCommerce\\OM\\Core\\Site\\' . $site . '\\Controller', 'getGuestApplications'))) && file_exists($DLcapps->getDirectory() . '/' . $file['name'] . '/Controller.php') ) {
+            $applications[] = $file['name'];
+          }
+        }
       }
 
       $shortcuts = array();
@@ -109,7 +118,6 @@
                                 'group' => $OSCOM_Application->getGroup(),
                                 'linkable' => $OSCOM_Application->canLinkTo(),
                                 'shortcut' => in_array($app, $shortcuts),
-                                'shortcut_callback' => $OSCOM_Application->getShortcutCallback(),
                                 'sort_order' => $OSCOM_Application->getSortOrder());
         }
       }
@@ -160,22 +168,6 @@
 
       if ( isset($_SESSION[$site]['id']) ) {
         return $_SESSION[$site]['access'][$application]['shortcut'];
-      }
-
-      return false;
-    }
-
-    public static function hasShortcutCallback($site = null) {
-      if ( empty($site) ) {
-        $site = OSCOM::getSite();
-      }
-
-      if ( isset($_SESSION[$site]['id']) ) {
-        foreach ( $_SESSION[$site]['access'] as $module => $data ) {
-          if ( $data['shortcut'] === true && $data['shortcut_callback'] ) {
-            return true;
-          }
-        }
       }
 
       return false;

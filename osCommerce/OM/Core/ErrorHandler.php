@@ -115,26 +115,14 @@
       return $result['total'];
     }
 
-<<<<<<< HEAD
-    public static function find($search, $limit = null, $offset = null, $from = 0) {
-      if ( !is_resource(self::$_resource) ) {
-        self::connect();
-=======
     public static function find($search, $limit = null, $pageset = null) {
       if ( !is_resource(self::$_dbh) && !self::connect() ) {
         return array();
->>>>>>> upstream/master
       }
 
       $query = 'select timestamp, message from error_log where message like :message order by rowid desc';
 
-<<<<<<< HEAD
-      $query = 'select timestamp, message from error_log where message like "%' . addslashes($search) . '%" and timestamp > '.$from.' order by rowid desc';
-
-      if ( !empty($limit) ) {
-=======
       if ( is_numeric($limit) ) {
->>>>>>> upstream/master
         $query .= ' limit ' . (int)$limit;
 
         if ( is_numeric($pageset) ) {
