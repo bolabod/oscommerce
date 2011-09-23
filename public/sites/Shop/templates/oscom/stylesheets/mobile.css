@@ -1,0 +1,7 @@
+#pageColumnRight{ display:none }
+#navigationIcons{ padding:7px 7px 0px 0px }
+#navigationIcons .ui-btn{ float:right }
+#pageColumnLeft .boxGroup div.ui-widget{ display:none }
+#pageColumnLeft .boxGroup div.categories{ display:block }
+#pageBlockLeft{ width:auto }
+#pageBlockLeft #pageContent{ width:auto; float:none; margin:0px 5px 15px 5px }

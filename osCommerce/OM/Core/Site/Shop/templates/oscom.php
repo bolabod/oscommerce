@@ -32,6 +32,8 @@
 
 <link rel="stylesheet" type="text/css" href="<?php echo OSCOM::getPublicSiteLink('templates/oscom/stylesheets/general.css'); ?>" />
 
+<script type="text/javascript" src="public/external/jquery/mobile/loader.js"></script>
+
 <?php
   if ( $OSCOM_Template->hasPageTags() ) {
     echo $OSCOM_Template->getPageTags();
