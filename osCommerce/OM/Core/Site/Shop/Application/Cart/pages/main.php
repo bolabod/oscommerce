@@ -18,63 +18,38 @@
   }
 ?>
 
-<div class="moduleBox">
-  <h6><?php echo OSCOM::getDef('shopping_cart_heading'); ?></h6>
-
-  <form name="shopping_cart" action="<?php echo OSCOM::getLink(null, null, 'Update', 'SSL'); ?>" method="post">
-
-  <div class="content">
-    <table border="0" width="100%" cellspacing="0" cellpadding="2">
-
+ <ul data-role="listview" data-inset="true" data-split-icon="plus">
+ 
 <?php
     $_cart_date_added = null;
 
     foreach ( $OSCOM_ShoppingCart->getProducts() as $products ) {
-      if ( $products['date_added'] != $_cart_date_added ) {
-        $_cart_date_added = $products['date_added'];
 ?>
 
-      <tr>
-        <td colspan="4"><?php echo sprintf(OSCOM::getDef('date_added_to_shopping_cart'), $products['date_added']); ?></td>
-      </tr>
+      <li>
+        
 
 <?php
-      }
-?>
 
-      <tr>
-        <td valign="top" width="60"><?php echo HTML::button(array('href' => OSCOM::getLink(null, null, 'Delete=' . $products['item_id'], 'SSL'), 'icon' => 'trash', 'title' => OSCOM::getDef('button_delete'))); ?></td>
-        <td valign="top">
-
-<?php
-      echo HTML::link(OSCOM::getLink(null, 'Products', $products['keyword']), '<b>' . $products['name'] . '</b>');
-
-      if ( (STOCK_CHECK == '1') && ($OSCOM_ShoppingCart->isInStock($products['item_id']) === false) ) {
-        echo '<span class="markProductOutOfStock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</span>';
-      }
-
-// HPDL      echo '&nbsp;(Top Category)';
-
+	  $content = '<h3>'.$products['quantity'].'x '.$products['name'].(STOCK_CHECK == '1' && $OSCOM_ShoppingCart->isInStock($products['item_id']) === false ? '<span class="markProductOutOfStock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</span>' : '').'</h3>';
       if ( $OSCOM_ShoppingCart->isVariant($products['item_id']) ) {
         foreach ( $OSCOM_ShoppingCart->getVariant($products['item_id']) as $variant) {
-          echo '<br />- ' . $variant['group_title'] . ': ' . $variant['value_title'];
+          $content .= '<p>- ' . $variant['group_title'] . ': ' . $variant['value_title'].'</p>';
         }
       }
+	  
+      echo HTML::link(OSCOM::getLink(null, 'Products', $products['keyword']), $content).'<a href="'.OSCOM::getLink(null, null, 'Delete=' . $products['item_id'], 'SSL').'"data-icon="minus">'.OSCOM::getDef('button_delete').'</a>';
+
+
 ?>
 
-        </td>
-        <td valign="top"><?php echo HTML::inputField('products[' . $products['item_id'] . ']', $products['quantity'], 'size="4"'); ?> <a href="#" onclick="document.shopping_cart.submit(); return false;">update</a></td>
-        <td valign="top" align="right"><?php echo '<b>' . $OSCOM_Currencies->displayPrice($products['price'], $products['tax_class_id'], $products['quantity']) . '</b>'; ?></td>
-      </tr>
+      </li>
 
 <?php
     }
 ?>
 
-    </table>
-  </div>
-
-  </form>
+ </ul>
 
   <table border="0" width="100%" cellspacing="0" cellpadding="2">
 
@@ -103,9 +78,6 @@
     }
 ?>
 
-</div>
-
-<div class="moduleBox">
   <form name="checkout" action="<?php echo OSCOM::getLink(null, 'Checkout', null, 'SSL'); ?>" method="post">
 
   <div style="float: right;">
@@ -125,4 +97,3 @@
 ?>
 
   </form>
-</div>

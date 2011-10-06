@@ -5,65 +5,7 @@
  * @license BSD License; http://www.oscommerce.com/bsdlicense.txt
  */
 
-::-moz-selection{ background: #36d63d; color:#fff; text-shadow: none; }
-::selection { background:#36d63d; color:#fff; text-shadow: none; }
-a:link { -webkit-tap-highlight-color: #36d63d; }
-
-.ui-widget {
-  font-family: Lucida Grande, Lucida Sans, Verdana, Arial, sans-serif;
-  font-size: 12px;
-}
-
 /* MARKUP */
-
-BODY {
-  background: #FFFFFF;
-  margin: 0;
-  padding: 0;
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-size: 12px;
-  line-height: 1.5;
-  min-width: 760px;
-}
-
-H1 {
-  color: #000000;
-  font-family: Tahoma, 'Trebuchet MS', Verdana, Arial, sans-serif;
-  font-size: 22px;
-  font-weight: normal;
-  white-space: nowrap;
-  margin: 5px 0 10px 0;
-}
-
-H2 {
-  color: #000000;
-  font-family: Tahoma, 'Trebuchet MS', Verdana, Arial, sans-serif;
-  font-size: 20px;
-  font-weight: normal;
-  white-space: nowrap;
-  margin: 0;
-}
-
-H6 {
-  color: #000000;
-  font-family: Tahoma, 'Trebuchet MS', Verdana, Arial, sans-serif;
-  font-size: 13px;
-  font-weight: bold;
-  white-space: nowrap;
-  margin: 0;
-}
-
-TD, P {
-  font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-size: 12px;
-  line-height: 1.5;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-IMG {
-  border: 0;
-}
 
 FORM {
   margin-top: 0;
@@ -81,102 +23,10 @@ FORM OL LI {
   clear: left;
 }
 
-FORM LABEL {
-  float: left;
-  width: 160px;
-  margin: 5px;
-}
-
-FORM LABEL.fieldLabel {
-  float: none;
-}
-
-FORM INPUT, FORM SELECT, FORM TEXTAREA {
-}
-
 FORM EM {
   color: #FF0000;
-  font-size: 9px;
+  font-size: 12px;
   margin-left: 2px;
-}
-
-/* LAYOUT */
-
-#pageHeader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-#pageContent {
-  float: right;
-  width: 78%;
-}
-
-#pageColumnLeft {
-  float: left;
-  width: 20%;
-  padding-left: 5px;
-}
-
-#pageBlockLeft {
-  float: left;
-  width: 82%;
-  margin: 85px 0 10px 0;
-}
-
-#pageColumnRight {
-  float: right;
-  width: 16%;
-  margin: 85px 5px 10px 0;
-}
-
-#pageFooter {
-  clear: both;
-  text-align: center;
-  padding: 5px;
-}
-
-/* LINKS */
-
-#navigationBar A {
-  color: #FFFFFF;
-}
-
-#navigationBar A:hover {
-  color: #FFFFFF;
-  text-decoration: underline;
-}
-
-/* DEFINITIONS */
-
-#siteLogo {
-  float: left;
-}
-
-#navigationIcons {
-  float: right;
-  margin: 0;
-  padding: 15px 15px 0 0;
-  list-style-type: none;
-}
-
-#navigationIcons li {
-  display: inline;
-  padding: 5px;
-}
-
-#navigationBar {
-  color: #FFFFFF;
-  font-weight: bold;
-  margin-top: 60px;
-  padding-right: 5px;
-  width: 100%;
-}
-
-#breadcrumbPath {
-
 }
 
 #pageIcon {
@@ -248,16 +98,6 @@ FORM EM {
 .stockWarning { font-family : Verdana, Arial, Helvetica, sans-serif; font-size : 12px; color: #cc0033; }
 .productsNotifications { background: #f2fff7; }
 .orderEdit { font-family : Verdana, Arial, Helvetica, sans-serif; font-size : 12px; color: #70d250; text-decoration: underline; font-weight: normal; }
-
-A {
-  color: black;
-  text-decoration: none;
-}
-
-A:hover {
-  color: #AABBDD;
-  text-decoration: underline;
-}
 
 .infoBox {
   background: #b6b7cb;
@@ -443,3 +283,9 @@ SPAN.errorText {
 .ships24hours {
   color: #45B04C;
 }
+
+.ui-footer{ text-align:center; padding:10px 0px; font-weight:normal; font-size:11px; }
+.ui-icon-cart{ background-image:url(../images/icon-cart.png); }
+.listingPageLinks{ font-size:12px; }
+form ol li { padding-bottom:3px; }
+.ui-select{ width:auto; }

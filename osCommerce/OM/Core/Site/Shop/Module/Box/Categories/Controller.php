@@ -27,11 +27,14 @@
       $OSCOM_Category = Registry::get('Category');
 
       $OSCOM_CategoryTree->reset();
+/*	  
       $OSCOM_CategoryTree->setCategoryPath($OSCOM_Category->getPath(), '<b>', '</b>');
       $OSCOM_CategoryTree->setParentGroupString('', '');
       $OSCOM_CategoryTree->setParentString('', '-&gt;');
       $OSCOM_CategoryTree->setChildString('', '<br />');
       $OSCOM_CategoryTree->setSpacerString('&nbsp;', 2);
+*/	  
+      $OSCOM_CategoryTree->setCategoryProductCountString('<span class="ui-li-count">', '</span>');
       $OSCOM_CategoryTree->setShowCategoryProductCount((BOX_CATEGORIES_SHOW_PRODUCT_COUNT == '1') ? true : false);
 
       $this->_content = $OSCOM_CategoryTree->getTree();

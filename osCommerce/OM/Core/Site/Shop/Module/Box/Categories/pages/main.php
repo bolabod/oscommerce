@@ -7,8 +7,4 @@
  */
 ?>
 
-<div class="ui-widget boxNew categories">
-  <div class="ui-widget-header boxTitle"><?php echo $OSCOM_Box->getTitle(); ?></div>
-
-  <div class="ui-widget-content boxContents"><?php echo $OSCOM_Box->getContent(); ?></div>
-</div>
+<?php echo preg_replace('/^<ul>/ism', '<ul data-role="listview" data-inset="true">', $OSCOM_Box->getContent()); ?>

@@ -49,130 +49,23 @@
   if ( count($products_listing['entries']) > 0 ) {
 ?>
 
-  <table border="0" width="100%" cellspacing="0" cellpadding="2">
-    <tr>
+ <ul data-role="listview" data-inset="true" data-split-icon="plus">
 
 <?php
-    for ($col=0, $n=sizeof($column_list); $col<$n; $col++) {
-      $lc_key = false;
-      $lc_align = '';
-
-      switch ($column_list[$col]) {
-        case 'PRODUCT_LIST_MODEL':
-          $lc_text = OSCOM::getDef('listing_model_heading');
-          $lc_key = 'model';
-          break;
-        case 'PRODUCT_LIST_NAME':
-          $lc_text = OSCOM::getDef('listing_products_heading');
-          $lc_key = 'name';
-          break;
-        case 'PRODUCT_LIST_MANUFACTURER':
-          $lc_text = OSCOM::getDef('listing_manufacturer_heading');
-          $lc_key = 'manufacturer';
-          break;
-        case 'PRODUCT_LIST_PRICE':
-          $lc_text = OSCOM::getDef('listing_price_heading');
-          $lc_key = 'price';
-          $lc_align = 'right';
-          break;
-        case 'PRODUCT_LIST_QUANTITY':
-          $lc_text = OSCOM::getDef('listing_quantity_heading');
-          $lc_key = 'quantity';
-          $lc_align = 'right';
-          break;
-        case 'PRODUCT_LIST_WEIGHT':
-          $lc_text = OSCOM::getDef('listing_weight_heading');
-          $lc_key = 'weight';
-          $lc_align = 'right';
-          break;
-        case 'PRODUCT_LIST_IMAGE':
-          $lc_text = OSCOM::getDef('listing_image_heading');
-          $lc_align = 'center';
-          break;
-        case 'PRODUCT_LIST_BUY_NOW':
-          $lc_text = OSCOM::getDef('listing_buy_now_heading');
-          $lc_align = 'center';
-          break;
-      }
-
-      if ($lc_key !== false) {
-        $lc_text = Products::getListingSortLink($lc_key, $lc_text);
-      }
-
-      echo '      <td align="' . $lc_align . '" class="productListing-heading">&nbsp;' . $lc_text . '&nbsp;</td>' . "\n";
-    }
-?>
-
-    </tr>
-
-<?php
-    $rows = 0;
 
     foreach ( $products_listing['entries'] as $p ) {
       $OSCOM_Product = new Product($p['products_id']);
 
-      $rows++;
-
-      echo '    <tr class="' . ((($rows/2) == floor($rows/2)) ? 'productListing-even' : 'productListing-odd') . '">' . "\n";
-
-      for ($col=0, $n=sizeof($column_list); $col<$n; $col++) {
-        $lc_align = '';
-
-        switch ($column_list[$col]) {
-          case 'PRODUCT_LIST_MODEL':
-            $lc_align = '';
-            $lc_text = '&nbsp;' . $OSCOM_Product->getModel() . '&nbsp;';
-            break;
-          case 'PRODUCT_LIST_NAME':
-            $lc_align = '';
-            if (isset($_GET['manufacturers'])) {
-              $lc_text = HTML::link(OSCOM::getLink(null, 'Products', $OSCOM_Product->getKeyword() . '&manufacturers=' . $_GET['manufacturers']), $OSCOM_Product->getTitle());
-            } else {
-              $lc_text = '&nbsp;' . HTML::link(OSCOM::getLink(null, 'Products', $OSCOM_Product->getKeyword() . ($OSCOM_Category->getID() > 0 ? '&cPath=' . $OSCOM_Category->getPath() : '')), $OSCOM_Product->getTitle()) . '&nbsp;';
-            }
-            break;
-          case 'PRODUCT_LIST_MANUFACTURER':
-            $lc_align = '';
-            $lc_text = '&nbsp;';
-
-            if ( $OSCOM_Product->hasManufacturer() ) {
-              $lc_text = '&nbsp;' . HTML::link(OSCOM::getLink(null, 'Index', 'Manufacturers=' . $OSCOM_Product->getManufacturerID()), $OSCOM_Product->getManufacturer()) . '&nbsp;';
-            }
-            break;
-          case 'PRODUCT_LIST_PRICE':
-            $lc_align = 'right';
-            $lc_text = '&nbsp;' . $OSCOM_Product->getPriceFormated() . '&nbsp;';
-            break;
-          case 'PRODUCT_LIST_QUANTITY':
-            $lc_align = 'right';
-            $lc_text = '&nbsp;' . $OSCOM_Product->getQuantity() . '&nbsp;';
-            break;
-          case 'PRODUCT_LIST_WEIGHT':
-            $lc_align = 'right';
-            $lc_text = '&nbsp;' . $OSCOM_Product->getWeight() . '&nbsp;';
-            break;
-          case 'PRODUCT_LIST_IMAGE':
-            $lc_align = 'center';
-            if (isset($_GET['manufacturers'])) {
-              $lc_text = HTML::link(OSCOM::getLink(null, 'Products', $OSCOM_Product->getKeyword() . '&manufacturers=' . $_GET['manufacturers']), $OSCOM_Image->show($OSCOM_Product->getImage(), $OSCOM_Product->getTitle()));
-            } else {
-              $lc_text = '&nbsp;' . HTML::link(OSCOM::getLink(null, 'Products', $OSCOM_Product->getKeyword() . ($OSCOM_Category->getID() > 0 ? '&cPath=' . $OSCOM_Category->getPath() : '')), $OSCOM_Image->show($OSCOM_Product->getImage(), $OSCOM_Product->getTitle())) . '&nbsp;';
-            }
-            break;
-          case 'PRODUCT_LIST_BUY_NOW':
-            $lc_align = 'center';
-            $lc_text = HTML::button(array('href' => OSCOM::getLink(null, 'Cart', 'Add&' . $OSCOM_Product->getKeyword()), 'icon' => 'cart', 'title' => OSCOM::getDef('button_buy_now')));
-            break;
-        }
-
-        echo '      <td ' . ((empty($lc_align) === false) ? 'align="' . $lc_align . '" ' : '') . 'class="productListing-data">' . $lc_text . '</td>' . "\n";
-      }
-
-      echo '    </tr>' . "\n";
+	  $content = $OSCOM_Image->show($OSCOM_Product->getImage(), $OSCOM_Product->getTitle());
+	  $content .= '<h3>'.$OSCOM_Product->getTitle().'</h3>';
+	  $content .= '<p>'.$OSCOM_Product->getPriceFormated().'</p>';
+	  $buynow = '<a href="'.OSCOM::getLink(null, 'Cart', 'Add&' . $OSCOM_Product->getKeyword()).'">'.OSCOM::getDef('button_buy_now').'</a>';
+	  
+      echo '<li>'.HTML::link(OSCOM::getLink(null, 'Products', $OSCOM_Product->getKeyword() . ($OSCOM_Category->getID() > 0 ? '&cPath=' . $OSCOM_Category->getPath() : '')), $content).$buynow.'</li>';
     }
 ?>
 
-  </table>
+ </ul>
 
 <?php
   } else {

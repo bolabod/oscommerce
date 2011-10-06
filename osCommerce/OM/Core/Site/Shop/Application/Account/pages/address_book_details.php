@@ -19,7 +19,7 @@
                           array('id' => 'f', 'text' => OSCOM::getDef('gender_female')));
 ?>
 
-  <li><?php echo HTML::label(OSCOM::getDef('field_customer_gender'), 'gender_1', null, (ACCOUNT_GENDER > 0)) . HTML::radioField('gender', $gender_array, (isset($osC_oiAddress) && $osC_oiAddress->exists('gender') ? $osC_oiAddress->get('gender') : (!$OSCOM_Customer->hasDefaultAddress() ? $OSCOM_Customer->getGender() : null))); ?></li>
+  <li><fieldset data-role="controlgroup" data-type="horizontal"><?php echo HTML::radioField('gender', $gender_array, (isset($osC_oiAddress) && $osC_oiAddress->exists('gender') ? $osC_oiAddress->get('gender') : (!$OSCOM_Customer->hasDefaultAddress() ? $OSCOM_Customer->getGender() : null)), null, ''); ?></fieldset></li>
 
 <?php
   }

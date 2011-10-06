@@ -13,9 +13,9 @@
   use osCommerce\OM\Core\Site\Shop\Reviews;
 ?>
 
-<h1 style="float: right;"><?php echo $OSCOM_Product->getPriceFormated(true); ?></h1>
 
 <h1><?php echo $OSCOM_Template->getPageTitle() . ($OSCOM_Product->hasModel() ? '<br /><span class="smallText">' . $OSCOM_Product->getModel() . '</span>' : ''); ?></h1>
+<p><?php echo $OSCOM_Product->getPriceFormated(true); ?></p>
 
 <?php
   if ( $OSCOM_MessageStack->exists('Reviews') ) {
@@ -25,10 +25,8 @@
   if ( $OSCOM_Product->hasImage() ) {
 ?>
 
-<div style="float: right; text-align: center;">
-  <?php echo HTML::link(OSCOM::getLink(null, null, 'Images&' . $OSCOM_Product->getKeyword()), $OSCOM_Image->show($OSCOM_Product->getImage(), $OSCOM_Product->getTitle(), 'hspace="5" vspace="5"', 'thumbnail'), 'target="_blank" onclick="window.open(\'' . OSCOM::getLink(null, null, 'Images&' . $OSCOM_Product->getKeyword()) . '\', \'popUp\', \'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=' . (($OSCOM_Product->numberOfImages() > 1) ? $OSCOM_Image->getWidth('large') + ($OSCOM_Image->getWidth('thumbnails') * 2) + 70 : $OSCOM_Image->getWidth('large') + 20) . ',height=' . ($OSCOM_Image->getHeight('large') + 20) . '\'); return false;"'); ?>
+  <div align="center"><?php echo HTML::link(OSCOM::getLink(null, null, 'Images&' . $OSCOM_Product->getKeyword()), $OSCOM_Image->show($OSCOM_Product->getImage(), $OSCOM_Product->getTitle(), '', 'product_info'), 'data-rel="dialog"'); ?></div>
   <?php echo '<p>' . HTML::button(array('href' => OSCOM::getLink(null, 'Cart', 'Add&' . $OSCOM_Product->getKeyword()), 'icon' => 'cart', 'title' => OSCOM::getDef('button_add_to_cart'))) . '</p>'; ?>
-</div>
 
 <?php
   }

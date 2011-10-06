@@ -149,11 +149,11 @@
             $link_title = $category['name'];
           }
 
-          $result .= str_repeat($this->spacer_string, $this->spacer_multiplier * $level) . HTML::link(OSCOM::getLink(null, 'Index', 'cPath=' . $category_link), $link_title);
-
           if ( $this->_show_total_products === true ) {
-            $result .= $this->category_product_count_start_string . $category['count'] . $this->category_product_count_end_string;
+            $link_title .= $this->category_product_count_start_string . $category['count'] . $this->category_product_count_end_string;
           }
+
+          $result .= str_repeat($this->spacer_string, $this->spacer_multiplier * $level) . HTML::link(OSCOM::getLink(null, 'Index', 'cPath=' . $category_link), $link_title);
 
           if ( $level === 0 ) {
             $result .= $this->root_end_string;
@@ -162,8 +162,6 @@
           if ( isset($this->_data[$category_id]) ) {
             $result .= $this->parent_end_string;
           }
-
-          $result .= $this->child_end_string;
 
           if ( isset($this->_data[$category_id]) && (($this->max_level == '0') || ($this->max_level > $level+1)) ) {
             if ( $this->follow_cpath === true ) {
@@ -174,6 +172,8 @@
               $result .= $this->_buildBranch($category_id, $level+1);
             }
           }
+
+          $result .= $this->child_end_string;
         }
       }
 

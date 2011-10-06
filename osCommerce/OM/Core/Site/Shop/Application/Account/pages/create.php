@@ -21,10 +21,8 @@
 <form name="create" action="<?php echo OSCOM::getLink(null, null, 'Create&Process', 'SSL'); ?>" method="post" onsubmit="return check_form(create);">
 
 <div class="moduleBox">
-  <em style="float: right; margin-top: 10px;"><?php echo OSCOM::getDef('form_required_information'); ?></em>
-
-  <h6><?php echo OSCOM::getDef('my_account_title'); ?></h6>
-
+  <em style="float: right;"><?php echo OSCOM::getDef('form_required_information'); ?></em>
+  <div style="clear:both;"></div><br />
   <div class="content">
     <ol>
 
@@ -34,26 +32,26 @@
                           array('id' => 'f', 'text' => OSCOM::getDef('gender_female')));
 ?>
 
-      <li><?php echo HTML::label(OSCOM::getDef('field_customer_gender'), 'gender_1', null, (ACCOUNT_GENDER > 0)) . HTML::radioField('gender', $gender_array); ?></li>
+      <li><fieldset data-role="controlgroup" data-type="horizontal"><?php echo HTML::radioField('gender', $gender_array, null, null, ''); ?></fieldset></li>
 
 <?php
   }
 ?>
 
-      <li><?php echo HTML::label(OSCOM::getDef('field_customer_first_name'), 'firstname', null, true) . HTML::inputField('firstname'); ?></li>
-      <li><?php echo HTML::label(OSCOM::getDef('field_customer_last_name'), 'lastname', null, true) . HTML::inputField('lastname'); ?></li>
+      <li><?php $label = OSCOM::getDef('field_customer_first_name'); echo HTML::inputField('firstname', $label, sprintf($onfocus, $label, $label)); ?></li>
+      <li><?php $label = OSCOM::getDef('field_customer_last_name'); echo HTML::inputField('lastname', $label, sprintf($onfocus, $label, $label)); ?></li>
 
 <?php
   if ( ACCOUNT_DATE_OF_BIRTH == '1' ) {
 ?>
 
-      <li><?php echo HTML::label(OSCOM::getDef('field_customer_date_of_birth'), 'dob_days', null, true) . HTML::dateSelectMenu('dob', null, false, null, null, date('Y')-1901, -5); ?></li>
+      <li><?php echo HTML::label(OSCOM::getDef('field_customer_date_of_birth'), 'dob_days', null, true) . '<fieldset data-role="controlgroup" data-type="horizontal">' . HTML::dateSelectMenu('dob', null, false, null, null, date('Y')-1901, -5).'</fieldset>'; ?></li>
 
 <?php
   }
 ?>
 
-      <li><?php echo HTML::label(OSCOM::getDef('field_customer_email_address'), 'email_address', null, true) . HTML::inputField('email_address'); ?></li>
+      <li><?php $label = OSCOM::getDef('field_customer_email_address'); echo HTML::inputField('email_address', $label, sprintf($onfocus, $label, $label)); ?></li>
 
 <?php
   if ( ACCOUNT_NEWSLETTER == '1' ) {
@@ -65,8 +63,8 @@
   }
 ?>
 
-      <li><?php echo HTML::label(OSCOM::getDef('field_customer_password'), 'password', null, true) . HTML::passwordField('password'); ?></li>
-      <li><?php echo HTML::label(OSCOM::getDef('field_customer_password_confirmation'), 'confirmation', null, true) . HTML::passwordField('confirmation'); ?></li>
+      <li><?php $label = OSCOM::getDef('field_customer_password'); echo HTML::inputField('password', $label, sprintf($onfocuspassword, $label, $label)); ?></li>
+      <li><?php $label = OSCOM::getDef('field_customer_password_confirmation'); echo HTML::inputField('confirmation', $label, sprintf($onfocuspassword, $label, $label)); ?></li>
     </ol>
   </div>
 </div>

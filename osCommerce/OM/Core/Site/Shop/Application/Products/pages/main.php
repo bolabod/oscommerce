@@ -16,26 +16,21 @@
 
 <h1><?php echo $OSCOM_Template->getPageTitle(); ?></h1>
 
-<div>
+<div align="center">
 
 <?php
   if ( $OSCOM_Product->hasImage() ) {
 ?>
 
-  <div style="float: left; text-align: center; padding: 0 10px 10px 0; width: <?php echo $OSCOM_Image->getWidth('product_info'); ?>px;">
-    <?php echo HTML::link(OSCOM::getLink(null, 'Products', 'Images&' . $OSCOM_Product->getKeyword()), $OSCOM_Image->show($OSCOM_Product->getImage(), $OSCOM_Product->getTitle(), null, 'product_info'), 'target="_blank" onclick="window.open(\'' . OSCOM::getLink(null, 'Products', 'Images&' . $OSCOM_Product->getKeyword()) . '\', \'popUp\', \'toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=' . (($OSCOM_Product->numberOfImages() > 1) ? $OSCOM_Image->getWidth('large') + ($OSCOM_Image->getWidth('thumbnails') * 2) + 70 : $OSCOM_Image->getWidth('large') + 20) . ',height=' . ($OSCOM_Image->getHeight('large') + 20) . '\'); return false;"'); ?>
-  </div>
+    <?php echo HTML::link(OSCOM::getLink(null, 'Products', 'Images&' . $OSCOM_Product->getKeyword()), $OSCOM_Image->show($OSCOM_Product->getImage(), $OSCOM_Product->getTitle(), null, 'product_info'), 'data-rel="dialog"'); ?>
+
+</div><br />
 
 <?php
   }
 ?>
 
-  <div style="<?php if ( $OSCOM_Product->hasImage() ) { echo 'margin-left: ' . ($OSCOM_Image->getWidth('product_info') + 20) . 'px; '; } ?>min-height: <?php echo $OSCOM_Image->getHeight('product_info'); ?>px;">
     <form name="cart_quantity" action="<?php echo OSCOM::getLink(null, 'Cart', 'Add&' . $OSCOM_Product->getKeyword()); ?>" method="post">
-
-    <div style="float: right;">
-      <?php echo HTML::button(array('icon' => 'cart', 'title' => OSCOM::getDef('button_add_to_cart'))); ?>
-    </div>
 
     <table border="0" cellspacing="0" cellpadding="0">
       <tr>
@@ -82,12 +77,6 @@
   }
 ?>
 
-    </form>
-  </div>
-</div>
-
-<div style="clear: both;"></div>
-
 <table border="0" cellspacing="0" cellpadding="0">
 
 <?php
@@ -122,6 +111,10 @@
 ?>
 
 </table>
+
+      <?php echo HTML::button(array('icon' => 'cart', 'title' => OSCOM::getDef('button_add_to_cart'))); ?><br />
+
+    </form>
 
 <?php
   if ( $OSCOM_Product->hasVariants() ) {

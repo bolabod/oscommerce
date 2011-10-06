@@ -10,25 +10,23 @@
   use osCommerce\OM\Core\OSCOM;
 ?>
 
-<h1><?php echo $OSCOM_Template->getPageTitle(); ?></h1>
-
 <?php
   if ( $OSCOM_MessageStack->exists('LogIn') ) {
     echo $OSCOM_MessageStack->get('LogIn');
   }
 ?>
 
-<div class="moduleBox" style="width: 49%; float: right;">
+<div class="moduleBox">
   <form name="login" action="<?php echo OSCOM::getLink(null, null, 'LogIn&Process', 'SSL'); ?>" method="post">
 
-  <h6><?php echo OSCOM::getDef('login_returning_customer_heading'); ?></h6>
+  <h2><?php echo OSCOM::getDef('login_returning_customer_heading'); ?></h2>
 
   <div class="content">
     <p><?php echo OSCOM::getDef('login_returning_customer_text'); ?></p>
 
     <ol>
-      <li><?php echo HTML::label(OSCOM::getDef('field_customer_email_address'), 'email_address') . HTML::inputField('email_address'); ?></li>
-      <li><?php echo HTML::label(OSCOM::getDef('field_customer_password'), 'password') . HTML::passwordField('password'); ?></li>
+      <li><?php $label = OSCOM::getDef('field_customer_email_address'); echo HTML::inputField('email_address', $label, sprintf($onfocus, $label, $label)); ?></li>
+      <li><?php $label = OSCOM::getDef('field_customer_password'); echo HTML::inputField('password', $label, sprintf($onfocuspassword, $label, $label)); ?></li>
     </ol>
 
     <p><?php echo sprintf(OSCOM::getDef('login_returning_customer_password_forgotten'), OSCOM::getLink(null, null, 'PasswordForgotten', 'SSL')); ?></p>
@@ -39,10 +37,8 @@
   </form>
 </div>
 
-<div class="moduleBox" style="width: 49%;">
-  <div class="outsideHeading">
-    <h6><?php echo OSCOM::getDef('login_new_customer_heading'); ?></h6>
-  </div>
+<div class="moduleBox">
+    <h2><?php echo OSCOM::getDef('login_new_customer_heading'); ?></h2>
 
   <div class="content">
     <p><?php echo OSCOM::getDef('login_new_customer_text'); ?></p>
